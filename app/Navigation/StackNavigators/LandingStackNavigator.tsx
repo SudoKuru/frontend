@@ -1,8 +1,7 @@
-import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
+
 import LandingPage from "../../Pages/LandingPage";
-import StatisticsPage from "../../Pages/StatisticsPage";
-import ProfilePage from "../../Pages/ProfilePage";
 
 const Stack = createStackNavigator();
 

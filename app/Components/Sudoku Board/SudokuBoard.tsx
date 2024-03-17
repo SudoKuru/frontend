@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import { finishGame, saveGame } from "./Functions/BoardFunctions";
+import { ActivityIndicator } from "react-native-paper";
+
+import ActionRow from "./Components/ActionRow";
+import Cell from "./Components/Cell";
+import EndGameModal from "./Components/EndGameModal";
+import HeaderRow from "./Components/HeaderRow";
+import NumberControl from "./Components/NumberControl";
+import Puzzle from "./Components/Puzzle";
+import {
+  finishGame,
+  saveGame,
+  isValueCorrect,
+} from "./Functions/BoardFunctions";
+import { generateGame } from "./Functions/generateGame";
 import {
   isCurrentCellAndSelectedCellInSameBox,
   isCurrentCellAndSelectedCellInSameColumn,
   isCurrentCellAndSelectedCellInSameRow,
 } from "./sudoku";
-import { ActivityIndicator } from "react-native-paper";
-import NumberControl from "./Components/NumberControl";
-import { isValueCorrect } from "./Functions/BoardFunctions";
-import Cell from "./Components/Cell";
-import ActionRow from "./Components/ActionRow";
-import { generateGame } from "./Functions/generateGame";
-import Puzzle from "./Components/Puzzle";
-import { CellProps, SudokuObjectProps } from "../../Functions/LocalDatabase";
 import { PreferencesContext } from "../../Contexts/PreferencesContext";
-import HeaderRow from "./Components/HeaderRow";
-import EndGameModal from "./Components/EndGameModal";
+import { CellProps, SudokuObjectProps } from "../../Functions/LocalDatabase";
 
 export interface SudokuBoardProps {
   action: "StartGame" | "ResumeGame";
@@ -28,6 +32,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
 
   useEffect(() => {
     generateGame(props).then((game) => {
+      // eslint-disable-next-line eqeqeq
       if (game == null) {
         return;
       }
@@ -35,9 +40,16 @@ const SudokuBoard = (props: SudokuBoardProps) => {
     });
   }, []);
 
+  const {
+    isHighlightIdenticalValues,
+    isHighlightBox,
+    isHighlightRow,
+    isHighlightColumn,
+  } = React.useContext(PreferencesContext);
+
   // if we are loading then we return the loading icon
   if (sudokuBoard == null) {
-    return <ActivityIndicator animating={true} color="red" />;
+    return <ActivityIndicator animating color="red" />;
   }
 
   // Render EndGame screen when game has ended
@@ -122,7 +134,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
       (currentEntry === inputValue ||
         isValueCorrect(
           sudokuBoard.puzzleSolution[r][c],
-          currentEntry as number
+          currentEntry as number,
         ))
     ) {
       return;
@@ -142,7 +154,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
     // Storing old value in actionHistory
     sudokuBoard.actionHistory.push({
       cell: { entry: currentEntry, type: currentType } as CellProps, // annoying typescript casting workaround
-      cellLocation: { c: c, r: r },
+      cellLocation: { c, r },
     });
 
     // Saving current game status
@@ -153,7 +165,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
         sudokuBoard.statistics.difficulty,
         sudokuBoard.statistics.numHintsUsed,
         sudokuBoard.statistics.numWrongCellsPlayed,
-        sudokuBoard.statistics.time
+        sudokuBoard.statistics.time,
       );
       sudokuBoard.statistics.score = score;
       setSudokuBoard({
@@ -210,7 +222,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
       const currentEntryCopy = JSON.parse(JSON.stringify(currentEntry));
       if (currentEntryCopy.includes(inputValue)) {
         newCellEntry = currentEntryCopy.filter(
-          (note: number) => note != inputValue
+          (note: number) => note !== inputValue,
         );
       } else {
         currentEntryCopy.push(inputValue);
@@ -234,7 +246,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
         }
         const isValueCorrectResult = isValueCorrect(
           sudokuBoard.puzzleSolution[r][c],
-          sudokuBoard.puzzle[r][c].entry as number
+          sudokuBoard.puzzle[r][c].entry as number,
         );
         if (isValueCorrectResult === false) {
           return false;
@@ -262,7 +274,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
     } else {
       setSudokuBoard({
         ...sudokuBoard,
-        selectedCell: { r: r, c: c },
+        selectedCell: { r, c },
       });
     }
   };
@@ -275,7 +287,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
    * @returns True if the value in a cell is incorrect, False otherwise
    */
   const isConflict = (r: number, c: number, cell: CellProps): boolean => {
-    if (cell.type == "note" || cell.entry == 0) {
+    if (cell.type === "note" || cell.entry === 0) {
       return false;
     }
     return !(
@@ -286,16 +298,10 @@ const SudokuBoard = (props: SudokuBoardProps) => {
   const renderCell = (cell: CellProps, r: number, c: number) => {
     // row and column values are incorrect here.
     // console.log("RENDER CELL", c, "COLUMN", r, "ROW", cell)
-    const {
-      isHighlightIdenticalValues,
-      isHighlightBox,
-      isHighlightRow,
-      isHighlightColumn,
-    } = React.useContext(PreferencesContext);
 
-    let selected = sudokuBoard.selectedCell;
+    const selected = sudokuBoard.selectedCell;
     let isSelected = false;
-    let conflict = isConflict(r, c, cell);
+    const conflict = isConflict(r, c, cell);
     let peer = false;
     let box = false;
     let row = false;
@@ -303,12 +309,9 @@ const SudokuBoard = (props: SudokuBoardProps) => {
     let sameValue = false;
     if (selected != null) {
       isSelected = c === selected.c && r === selected.r;
-      box = isCurrentCellAndSelectedCellInSameBox({ r: r, c: c }, selected);
-      row = isCurrentCellAndSelectedCellInSameRow({ r: r, c: c }, selected);
-      column = isCurrentCellAndSelectedCellInSameColumn(
-        { r: r, c: c },
-        selected
-      );
+      box = isCurrentCellAndSelectedCellInSameBox({ r, c }, selected);
+      row = isCurrentCellAndSelectedCellInSameRow({ r, c }, selected);
+      column = isCurrentCellAndSelectedCellInSameColumn({ r, c }, selected);
       peer =
         !conflict &&
         ((box && isHighlightBox) ||
@@ -320,12 +323,12 @@ const SudokuBoard = (props: SudokuBoardProps) => {
         return;
       }
       const selectedEntry = currentSelectedCell.entry;
-      let currentEntry = cell.entry;
+      const currentEntry = cell.entry;
       sameValue =
         !conflict &&
         isHighlightIdenticalValues &&
         selectedEntry === currentEntry &&
-        currentEntry != 0;
+        currentEntry !== 0;
     }
 
     return (
@@ -371,9 +374,9 @@ const SudokuBoard = (props: SudokuBoardProps) => {
       updateCellEntry(parseInt(inputValue, 10));
     }
     if (
-      inputValue == "Delete" ||
-      inputValue == "Backspace" ||
-      inputValue == "0"
+      inputValue === "Delete" ||
+      inputValue === "Backspace" ||
+      inputValue === "0"
     )
       eraseSelected();
   };
@@ -400,7 +403,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
           sudokuBoard.puzzleSolution[sudokuBoard.selectedCell!.r][
             sudokuBoard.selectedCell!.c
           ],
-          currentSelectedCell.entry
+          currentSelectedCell.entry,
         );
     }
     return (
@@ -413,11 +416,11 @@ const SudokuBoard = (props: SudokuBoardProps) => {
 
   const renderActions = () => {
     const inNoteMode = sudokuBoard.inNoteMode;
-    let currentSelectedCell: CellProps | null = getCurrentSelectedCell();
+    const currentSelectedCell: CellProps | null = getCurrentSelectedCell();
     let isEraseButtonDisabled = sudokuBoard.selectedCell == null;
     const isUndoButtonDisabled =
       sudokuBoard.actionHistory == null ||
-      sudokuBoard.actionHistory.length == 0;
+      sudokuBoard.actionHistory.length === 0;
     if (currentSelectedCell != null) {
       const isCellGiven = currentSelectedCell.type === "given";
       const isCellEmpty =
@@ -428,7 +431,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
           sudokuBoard.puzzleSolution[sudokuBoard.selectedCell!.r][
             sudokuBoard.selectedCell!.c
           ],
-          currentSelectedCell.entry
+          currentSelectedCell.entry,
         );
       // disable erase button if value === 0 or is given
       if (isCellGiven || isCellEmpty || isCellCorrect) {
@@ -450,7 +453,7 @@ const SudokuBoard = (props: SudokuBoardProps) => {
 
   return (
     <View
-      testID={"sudokuBoard"}
+      testID="sudokuBoard"
       onKeyDown={handleKeyDown}
       style={{
         alignItems: "center",

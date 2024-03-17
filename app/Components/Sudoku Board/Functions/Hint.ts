@@ -43,7 +43,7 @@ export default class Hint {
    */
   public addCauses(step: number, causes: number[][]): void {
     for (let i: number = 0; i < causes.length; i++) {
-      let tempGroup: Group = new Group();
+      const tempGroup: Group = new Group();
       tempGroup.setRow(causes[i][0]);
       tempGroup.setCol(causes[i][1]);
       this.causes[step].push(tempGroup);
@@ -61,9 +61,9 @@ export default class Hint {
     step: number,
     position: number[],
     values: number[],
-    mode: string
+    mode: string,
   ): void {
-    let tempGroup: Group = new Group();
+    const tempGroup: Group = new Group();
     tempGroup.setRow(position[0]);
     tempGroup.setCol(position[1]);
     tempGroup.setValues(values);
@@ -78,7 +78,7 @@ export default class Hint {
    * @param mode - mode of the placement
    */
   public addPlacement(position: number[], value: number, mode: string): void {
-    let tempGroup: Group = new Group();
+    const tempGroup: Group = new Group();
     tempGroup.setRow(position[0]);
     tempGroup.setCol(position[1]);
     tempGroup.setValues([value]);
@@ -91,13 +91,13 @@ export default class Hint {
    */
   public adjustForPointingSet(): void {
     // Get box involved in pointing set
-    let box: number = this.groups[1][0].getBox();
+    const box: number = this.groups[1][0].getBox();
     // Determine if row or column is involved in pointing set
-    let row: number = this.groups[0][0].getRow();
-    let col: number = this.groups[0][0].getCol();
-    let isRow: boolean = row !== -1;
+    const row: number = this.groups[0][0].getRow();
+    const col: number = this.groups[0][0].getCol();
+    const isRow: boolean = row !== -1;
     // Create row or column group
-    let temp: Group = new Group();
+    const temp: Group = new Group();
     if (isRow) {
       temp.setRow(row);
     } else {
@@ -119,7 +119,7 @@ export default class Hint {
    * Returns the hint steps using legacy SudokuBoard format
    */
   public getHintSteps(): any[] {
-    let hintSteps: any[] = [];
+    const hintSteps: any[] = [];
     for (let step: number = 0; step < this.stepCount; step++) {
       hintSteps.push({});
       if (this.groups[step].length > 0) {
@@ -141,7 +141,7 @@ export default class Hint {
           removal++
         ) {
           hintSteps[step].removals.push(
-            this.removals[step][removal].getRemoval()
+            this.removals[step][removal].getRemoval(),
           );
         }
       }

@@ -1,12 +1,8 @@
-import React from "react";
-import {
-  Pressable,
-  Image,
-  ImageURISource,
-  useWindowDimensions,
-} from "react-native";
-import { Surface, useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { Pressable, Image, ImageURISource } from "react-native";
+import { Surface, useTheme } from "react-native-paper";
+
 import { PreferencesContext } from "../../Contexts/PreferencesContext";
 import { useNewWindowDimensions } from "../../Functions/WindowDimensions";
 

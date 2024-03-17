@@ -1,27 +1,21 @@
+import { useFocusEffect } from "@react-navigation/core";
+import { rgba } from "polished";
 import React from "react";
 import { ScrollView, View } from "react-native";
+import Alert from "react-native-awesome-alerts";
 import { Button, useTheme, ActivityIndicator } from "react-native-paper";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useWindowDimensions } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { PreferencesContext } from "../Contexts/PreferencesContext";
-import { useFocusEffect } from "@react-navigation/core";
+
+import { Statistics } from "../Api/Statistics";
 import TotalStatistics, {
   StatisticsProps,
 } from "../Components/Statistics/TotalStatistics";
-import Alert from "react-native-awesome-alerts";
-import { rgba } from "polished";
-import { Statistics } from "../Api/Statistics";
+import { PreferencesContext } from "../Contexts/PreferencesContext";
 
 const StatisticsPage = () => {
   const theme = useTheme();
-  const navigation: any = useNavigation();
 
-  const size = useWindowDimensions();
-  const reSize = Math.min(size.width, size.height);
-
-  const { updateLearnedLessons, learnedLessons } =
-    React.useContext(PreferencesContext);
+  const { updateLearnedLessons } = React.useContext(PreferencesContext);
 
   const [isLoading, setLoading] = React.useState<boolean>(true);
   const [totalStatistics, setTotalStatistics] = React.useState<StatisticsProps>(
@@ -33,7 +27,7 @@ const StatisticsPage = () => {
       numHintsUsed: 0,
       numWrongCellsPlayed: 0,
       totalSolveTime: 0,
-    }
+    },
   );
 
   const [warningVisible, setWarningVisible] = React.useState(false);
@@ -60,14 +54,14 @@ const StatisticsPage = () => {
   useFocusEffect(
     React.useCallback(() => {
       getUserStatistics();
-    }, [])
+    }, []),
   );
 
   if (isLoading) {
     return (
       <SafeAreaProvider>
         <SafeAreaView style={{ height: "100%", width: "100%" }}>
-          <ActivityIndicator animating={true} color={theme.colors.primary} />
+          <ActivityIndicator animating color={theme.colors.primary} />
         </SafeAreaView>
       </SafeAreaProvider>
     );
@@ -111,12 +105,12 @@ const StatisticsPage = () => {
           alertContainerStyle={{
             backgroundColor: rgba(theme.colors.background, 0.3),
           }}
-          showConfirmButton={true}
-          showCancelButton={true}
-          closeOnTouchOutside={true}
-          closeOnHardwareBackPress={true}
-          confirmText={"Delete"}
-          cancelText={"Cancel"}
+          showConfirmButton
+          showCancelButton
+          closeOnTouchOutside
+          closeOnHardwareBackPress
+          confirmText="Delete"
+          cancelText="Cancel"
           confirmButtonColor="red"
           cancelButtonColor={theme.colors.primary}
           onConfirmPressed={() => {

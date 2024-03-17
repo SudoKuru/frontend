@@ -1,16 +1,14 @@
+import { rgba } from "polished";
 import React, { useState } from "react";
 import { View, Pressable, ScrollView } from "react-native";
-import { Text, useTheme } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Alert from "react-native-awesome-alerts";
-import { rgba } from "polished";
+import { Text, useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import DrillPanel from "../Components/Home/DrillPanel";
 import { useNewWindowDimensions } from "../Functions/WindowDimensions";
 
 const DrillPage = () => {
-  const navigation: any = useNavigation();
-
   const theme = useTheme();
 
   const windowSize = useNewWindowDimensions();
@@ -86,10 +84,10 @@ const DrillPage = () => {
           alertContainerStyle={{
             backgroundColor: rgba(theme.colors.background, 0.3),
           }}
-          showConfirmButton={true}
+          showConfirmButton
           closeOnTouchOutside={false}
           closeOnHardwareBackPress={false}
-          confirmText={"OK"}
+          confirmText="OK"
           confirmButtonColor={theme.colors.primary}
           onConfirmPressed={() => {
             hideDrillHelp();

@@ -1,15 +1,7 @@
-import { sudokuStrategyArray } from "sudokuru";
-import { gameResults, puzzle, statistics } from "./Puzzle.Types";
-import { activeGame } from "./Puzzle.Types";
-import {
-  GameDifficulty,
-  GameDifficultyScore,
-  GameStatistics,
-  SudokuObjectProps,
-  returnLocalGame,
-} from "../Functions/LocalDatabase";
-import { getKeyJSON, removeData, storeData } from "../Functions/AsyncStorage";
+import { puzzle, statistics } from "./Puzzle.Types";
 import { Statistics } from "./Statistics";
+import { getKeyJSON, removeData, storeData } from "../Functions/AsyncStorage";
+import { SudokuObjectProps, returnLocalGame } from "../Functions/LocalDatabase";
 
 // Random games to be used by getRandomGame for landing page
 const DEMO_RANDOM_GAMES: puzzle[][] = [
@@ -225,13 +217,13 @@ export class Puzzles {
     numHintsUsed: number,
     numWrongCellsPlayed: number,
     time: number,
-    score: number
+    score: number,
   ) {
     // remove the game from storage
     await removeData("active_game");
 
     // Create or update user's statistics
-    let statistics: statistics = await Statistics.getStatistics();
+    const statistics: statistics = await Statistics.getStatistics();
 
     statistics.totalScore += score;
     if (
@@ -245,7 +237,7 @@ export class Puzzles {
     statistics.numHintsUsed += numHintsUsed;
     statistics.numWrongCellsPlayed += numWrongCellsPlayed;
     statistics.averageSolveTime = Math.round(
-      statistics.totalSolveTime / statistics.numGamesPlayed
+      statistics.totalSolveTime / statistics.numGamesPlayed,
     );
 
     Statistics.saveStatisitics(statistics);

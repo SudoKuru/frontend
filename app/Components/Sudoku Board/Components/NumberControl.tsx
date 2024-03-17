@@ -1,10 +1,11 @@
-import { useTheme } from "react-native-paper";
-import { Pressable, Text, View } from "react-native";
-import { range } from "../sudoku";
 import React from "react";
-import { getCellSize } from "../Functions/BoardFunctions";
+import { Pressable, Text, View } from "react-native";
+import { useTheme } from "react-native-paper";
 
-let fallbackHeight = 30;
+import { useCellSize } from "../Functions/BoardFunctions";
+import { range } from "../sudoku";
+
+const fallbackHeight = 30;
 
 // todo rewrite
 
@@ -15,7 +16,7 @@ interface NumberControlProps {
 
 const NumberControl = (props: NumberControlProps) => {
   const { areNumberButtonsDisabled: prefilled, updateEntry } = props;
-  const cellSize = getCellSize();
+  const cellSize = useCellSize();
   const theme = useTheme();
   return (
     <View

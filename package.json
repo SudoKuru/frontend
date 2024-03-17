@@ -16,6 +16,7 @@
     "build:metro-web": "npx expo export --platform web",
     "preview:vercel": "vercel --name sudokuru-dev --yes",
     "prettier": "npx prettier --write .",
+    "eslint": "npx eslint . --fix",
     "open:cypress": "npx cypress open",
     "test:cypress": "npx cypress run --config video=false,screenshotOnRunFailure=false",
     "tauri": "tauri",
@@ -26,7 +27,10 @@
     "snyk:code": "npx snyk code test --org=sudokuru"
   },
   "lint-staged": {
-    "**/*": "npx prettier --write --ignore-unknown"
+    "**/*": [
+      "npx prettier --write --ignore-unknown",
+      "npm run eslint"
+    ]
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.2.3",
@@ -53,23 +57,26 @@
     "sudokuru": "2.1.0"
   },
   "devDependencies": {
-    "dotenv-safe": "^9.0.0",
     "@babel/core": "^7.20.0",
-    "@playwright/test": "^1.41.2",
-    "@types/dotenv-safe": "^8.1.5",
-    "@types/node": "^20.11.17",
     "@cypress/code-coverage": "^3.11.0",
     "@expo/metro-config": "^0.17.4",
+    "@playwright/test": "^1.41.2",
     "@tauri-apps/cli": "^1.5.5",
+    "@types/dotenv-safe": "^8.1.5",
+    "@types/node": "^20.11.17",
     "@types/react": "~18.2.45",
     "babel-plugin-istanbul": "^6.1.1",
     "cross-env": "^7.0.3",
     "cypress": "^13.6.4",
+    "dotenv-safe": "^9.0.0",
+    "eslint": "8.57.0",
+    "eslint-config-universe": "12.0.0",
+    "eslint-plugin-playwright": "^1.5.2",
     "expo-doctor": "^1.4.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "metro": "~0.80.4",
-    "prettier": "2.8.8",
+    "prettier": "3.2.5",
     "snyk": "^1.1259.0",
     "typescript": "^5.3.0",
     "vercel": "^28.18.1"

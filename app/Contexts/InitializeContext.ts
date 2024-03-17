@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Profile } from "../Api/Profile";
 import {
   CombinedDarkTheme,
@@ -37,14 +38,14 @@ const InitializeContext = () => {
     (props: any) => {
       return setCurrentPage(props);
     },
-    [isCurrentPage]
+    [isCurrentPage],
   );
 
   const updateLearnedLessons = React.useCallback(
     (props: any) => {
       return setLearnedLessons(props);
     },
-    [learnedLessons]
+    [learnedLessons],
   );
 
   const toggleHighlightIdenticalValues = React.useCallback(() => {
@@ -99,7 +100,7 @@ const InitializeContext = () => {
       isHighlightRow,
       toggleHighlightColumn,
       isHighlightColumn,
-    ]
+    ],
   );
 
   return {

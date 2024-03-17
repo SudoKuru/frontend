@@ -1,4 +1,3 @@
-.idea/
 .dccache
 node_modules/
 coverage/
@@ -6,6 +5,12 @@ android/
 jest-coverage/
 .nyc_output/
 junit.xml
+.idea/
+.husky/
+.github/
+License.md
+src-tauri/
+
 .expo/
 dist/
 .env
@@ -26,3 +31,6 @@ web-build/
 .DS_Store
 
 .vercel
+
+# eslint specific
+package.json

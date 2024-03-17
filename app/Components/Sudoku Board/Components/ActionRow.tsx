@@ -1,8 +1,9 @@
-import { getCellSize } from "../Functions/BoardFunctions";
-import { useTheme } from "react-native-paper";
-import { Platform, Pressable, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
+import { Platform, Pressable, View } from "react-native";
+import { useTheme } from "react-native-paper";
+
+import { useCellSize } from "../Functions/BoardFunctions";
 
 interface ActionRowProps {
   isEraseButtonDisabled: boolean;
@@ -22,11 +23,11 @@ const ActionRow = (props: ActionRowProps) => {
     toggleNoteMode,
     eraseSelected,
   } = props;
-  const cellSize = getCellSize();
+  const cellSize = useCellSize();
   const theme = useTheme();
 
-  const sizeConst = Platform.OS == "web" ? 1.5 : 1;
-  let fallbackHeight = 30;
+  const sizeConst = Platform.OS === "web" ? 1.5 : 1;
+  const fallbackHeight = 30;
 
   return (
     <View
@@ -43,7 +44,7 @@ const ActionRow = (props: ActionRowProps) => {
       <Pressable
         onPress={undo}
         disabled={isUndoButtonDisabled}
-        testID={"undoButton"}
+        testID="undoButton"
       >
         <MaterialCommunityIcons
           color={theme.colors.onBackground}
@@ -55,7 +56,7 @@ const ActionRow = (props: ActionRowProps) => {
       <Pressable
         onPress={toggleNoteMode}
         disabled={false}
-        testID={"toggleNoteModeButton"}
+        testID="toggleNoteModeButton"
       >
         {inNoteMode ? (
           // note mode on
@@ -77,7 +78,7 @@ const ActionRow = (props: ActionRowProps) => {
       <Pressable
         onPress={eraseSelected}
         disabled={isEraseButtonDisabled}
-        testID={"eraseButton"}
+        testID="eraseButton"
       >
         <MaterialCommunityIcons
           color={theme.colors.onBackground}

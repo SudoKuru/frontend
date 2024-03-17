@@ -2,11 +2,12 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import React from "react";
 import { View } from "react-native";
 import { useTheme, Text } from "react-native-paper";
-import { SudokuObjectProps } from "../../../Functions/LocalDatabase";
-import { getCellSize, saveGame, formatTime } from "../Functions/BoardFunctions";
-import PauseButton from "./PauseButton";
 
-let fallbackHeight = 30;
+import PauseButton from "./PauseButton";
+import { SudokuObjectProps } from "../../../Functions/LocalDatabase";
+import { useCellSize, saveGame, formatTime } from "../Functions/BoardFunctions";
+
+const fallbackHeight = 30;
 
 interface HeaderRowProps {
   sudokuBoard: SudokuObjectProps;
@@ -17,14 +18,14 @@ const HeaderRow = (props: HeaderRowProps) => {
   const { sudokuBoard, setSudokuBoard } = props;
 
   const currentTime = sudokuBoard.statistics.time;
-  const cellSize = getCellSize();
+  const cellSize = useCellSize();
   const navigation = useNavigation();
 
   const theme = useTheme();
 
   useFocusEffect(
     React.useCallback(() => {
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         sudokuBoard.statistics.time = sudokuBoard.statistics.time + 1;
         setSudokuBoard((prevState: SudokuObjectProps) => ({
           ...prevState,
@@ -32,7 +33,7 @@ const HeaderRow = (props: HeaderRowProps) => {
         }));
       }, 1000);
       return () => clearInterval(interval);
-    }, [sudokuBoard.statistics.time])
+    }, [sudokuBoard.statistics.time]),
   );
 
   const handlePause = () => {

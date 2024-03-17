@@ -1,4 +1,5 @@
 import { useWindowDimensions } from "react-native";
+
 import { Puzzles } from "../../../Api/Puzzles";
 import {
   GameDifficulty,
@@ -14,18 +15,18 @@ import {
  * This function retrieves the user's device size and calculates the cell size
  * board has width and height dimensions of 1 x 1.44444
  */
-export function getCellSize(): number {
+export function useCellSize(): number {
   const size = useWindowDimensions();
   return Math.min(size.width * 1.44444, size.height) / 15;
 }
 
-export function getBoardSize(): number {
-  return getCellSize() * 9;
+export function useBoardSize(): number {
+  return useCellSize() * 9;
 }
 
 export const isValueCorrect = (
   solution: number,
-  inputValue: number
+  inputValue: number,
 ): boolean => {
   return solution === inputValue;
 };
@@ -42,21 +43,21 @@ export const formatTime = (inputSeconds: number) => {
   const paddedHours =
     hours > 0
       ? (hours < 10 ? "0" : "") + hours + ":"
-      : hours == 0 && days != 0
-      ? "00:"
-      : "";
+      : hours === 0 && days !== 0
+        ? "00:"
+        : "";
   const paddedMinutes =
     minutes > 0
       ? (minutes < 10 ? "0" : "") + minutes + ":"
-      : minutes == 0 && hours != 0
-      ? "00:"
-      : "";
+      : minutes === 0 && hours !== 0
+        ? "00:"
+        : "";
   const paddedSeconds =
     seconds > 0
       ? (seconds < 10 ? "0" : "") + seconds
-      : seconds == 0 && minutes != 0
-      ? "00"
-      : "0";
+      : seconds === 0 && minutes !== 0
+        ? "00"
+        : "0";
 
   // Return formatted string
   return `${paddedDays}${paddedHours}${paddedMinutes}${paddedSeconds}`;
@@ -83,14 +84,14 @@ export function finishGame(
   difficulty: GameDifficulty,
   numHintsUsed: number,
   numWrongCellsPlayed: number,
-  time: number
+  time: number,
 ): number {
   // calculate score
   const score = calculateGameScore(
     numHintsUsed,
     numWrongCellsPlayed,
     time,
-    difficulty
+    difficulty,
   );
 
   // removes game from localstorage and updates statistics page
@@ -110,13 +111,13 @@ function calculateGameScore(
   numHintsUsed: number,
   numWrongCellsPlayed: number,
   time: number,
-  difficulty: GameDifficulty
+  difficulty: GameDifficulty,
 ): number {
   const difficultyScore: GameDifficultyScore =
     calculateDifficultyScore(difficulty);
   const hintAndIncorrectCellsScore: number = calculateHintAndIncorrectCellScore(
     numWrongCellsPlayed,
-    numHintsUsed
+    numHintsUsed,
   );
   const timeScore: number = calculateTimeScore(time);
   return difficultyScore + hintAndIncorrectCellsScore + timeScore;
@@ -128,7 +129,7 @@ function calculateGameScore(
  * @returns A number representing the difficulty score from the puzzle, which represents 30% of the total score
  */
 function calculateDifficultyScore(
-  difficulty: GameDifficulty
+  difficulty: GameDifficulty,
 ): GameDifficultyScore {
   if (difficulty === "easy") {
     return 10;
@@ -150,7 +151,7 @@ function calculateDifficultyScore(
  */
 function calculateHintAndIncorrectCellScore(
   numWrongCellsPlayed: number,
-  numHintsUsed: number
+  numHintsUsed: number,
 ): number {
   // hints and incorrect cell placements are weighted equally
   const totalScrewups = numWrongCellsPlayed + numHintsUsed;
